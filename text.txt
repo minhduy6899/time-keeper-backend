@@ -1,0 +1,18 @@
+	_id: ObjectID,
+
+	fullName: String, required
+
+	phone: String, required, unique
+
+	email: String, required, unique
+
+	address: String, default: “”
+
+	city: String, default: “”
+
+	country: String, default: “” 	
+
+	orders: [ObjectId], ref: Order     
+
+timeCreated: Date, default: Date.now() 	
+timeUpdated: Date, default: Date.now()
