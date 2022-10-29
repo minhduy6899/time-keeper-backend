@@ -1,7 +1,6 @@
 //khai báo thư viện express
 const express = require('express');
 const { CustomerMiddleware } = require('../middlewares/customerMiddleware');
-const CustomerController = require('../controllers/CustomerController');
 
 // Create router
 const CustomerRouter = express.Router();
