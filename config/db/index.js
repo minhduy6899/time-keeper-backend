@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 async function connect() {
   try {
-    await mongoose.connect(`mongodb+srv://minhduy6899:${process.env.DB_PASSWORD}@shop-24h.re1mfjg.mongodb.net/?retryWrites=true&w=majority`, {
+    await mongoose.connect(process.env.DB_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -12,26 +12,5 @@ async function connect() {
 
   }
 }
-
-
-
-// const connectDB = async () => {
-//   try {
-//     await mongoose.connect(
-//       `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.htal2au.mongodb.net/?retryWrites=true&w=majority`,
-//       {
-//         useCreateIndex: true,
-//         useNewUrlParser: true,
-//         useUnifiedTopology: true,
-//         useFindAndModify: false
-//       }
-//     )
-
-//     console.log('MongoDB connected')
-//   } catch (error) {
-//     console.log(error.message)
-//     process.exit(1)
-//   }
-// }
 
 module.exports = { connect };
