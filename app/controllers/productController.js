@@ -100,7 +100,7 @@ const getLimitProducts = async (req, res) => {
   // B2: validate
   // B3: Call model
   // productModel
-  await collection
+  productModel
     .find((productCategories === 'ALL' && productColor === 'ALL' && productSize === 'ALL') ? {} :
       (productCategories !== 'ALL' && productColor === 'ALL' && productSize === 'ALL') ?
         { category: productCategories } :
