@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 async function connect() {
   try {
-    await mongoose.connect(process.env.DB_URL, {
+    await mongoose.connect(`mongodb+srv://minhduy6899:${process.env.DB_PASSWORD}@shop-24h.re1mfjg.mongodb.net/?retryWrites=true&w=majority`, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -12,21 +12,5 @@ async function connect() {
 
   }
 }
-
-// mongodb+srv://minhduy:minhduy1@time-keeper-shop.e82m1hm.mongodb.net/?retryWrites=true&w=majority
-
-
-// const { MongoClient, ServerApiVersion } = require('mongodb');
-// const uri = process.env.DB_URL;
-// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-// client.connect(err => {
-//   const collection = client.db("test").collection("products")
-//   // perform actions on the collection object
-//   // collection.find({}).toArray().then((docs) => {
-//   //   console.log(EJSON.stringify(docs));
-//   // });
-//   console.log(collection)
-//   client.close();
-// });
 
 module.exports = { connect };
