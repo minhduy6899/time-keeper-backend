@@ -95,10 +95,8 @@ const getAllProducts = (req, res) => {
 
 // Get limit product
 const getLimitProducts = async (req, res) => {
-  const collection = context.services.get("shop-24h").db("products").collection("test");
   // B1: Get data from request
   const { limit, productName, minPrice, maxPrice, productCategories, productColor, productSize, sortProducts } = req.query
-
   // B2: validate
   // B3: Call model
   // productModel
