@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 
 const customerModel = require('../model/customerModel');
 
+
 // Create user
 // const createCustomer = (req, res) => {
 //   // B1: Get data from request
