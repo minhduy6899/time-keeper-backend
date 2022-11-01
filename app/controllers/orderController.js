@@ -1,47 +1,39 @@
 // Import thư viện mongoose
 const mongoose = require("mongoose");
 
+const Orders = require("../model/ordersModel");
 const orderModel = require('../model/orderModel');
 
 // Create course
-const createOrder = (req, res) => {
-  // B1: Get data from request
-  let bodyRequest = req.body;
+const createOrder = async (req, res) => {
 
-  // B2: Validate data
-  if (!bodyRequest.note) {
-    return res.status(400).json({
-      message: "email is required!"
-    })
-  }
+  console.log('check req: ', req.body)
 
-  if (!bodyRequest.cost) {
-    return res.status(400).json({
-      message: "address is required!"
-    })
-  }
-  const date = new Date(bodyRequest.shippedDate)
+  const {
+    shippingInfo,
+    orderItems,
+    paymentInfo,
+    itemsPrice,
+    taxPrice,
+    shippingPrice,
+    totalPrice,
+  } = req.body;
 
-  // B3: Call modal
-  let newOrderData = {
-    _id: mongoose.Types.ObjectId(),
-    shippedDate: date,
-    note: bodyRequest.note,
-    cost: bodyRequest.cost,
-  }
-  orderModel.create(newOrderData, (error, data) => {
-    if (error) {
-      return res.status(500).json({
-        message: error.message,
-        error: "something wrong when create order"
-      })
-    }
+  const order = await Orders.create({
+    shippingInfo,
+    orderItems,
+    paymentInfo,
+    itemsPrice,
+    taxPrice,
+    shippingPrice,
+    totalPrice,
+    paidAt: Date.now(),
+  });
 
-    return res.status(201).json({
-      message: "Create successfully",
-      newOrder: data
-    })
-  })
+  res.status(201).json({
+    success: true,
+    order,
+  });
 }
 
 // Get all course

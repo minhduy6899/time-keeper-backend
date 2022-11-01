@@ -57,16 +57,16 @@ const orderSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
-    required: true,
+    required: false,
   },
   paymentInfo: {
     id: {
       type: String,
-      required: true,
+      required: false,
     },
     status: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   paidAt: {
@@ -105,4 +105,4 @@ const orderSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Order", orderSchema);
+module.exports = mongoose.model("Orders", orderSchema);
