@@ -77,6 +77,8 @@ const customerModel = require('../model/customerModel');
 // @route POST customer
 // @desc Register user
 // @access Public
+
+// Create user
 const createCustomer = async (req, res) => {
   const { username, password, fullName, phone, address } = req.body
 
@@ -108,23 +110,22 @@ const createCustomer = async (req, res) => {
 
     // Return token
     const accessToken = jwt.sign(
-      { userId: newUser._id },
+      { id: newUser._id },
       process.env.ACCESS_TOKEN_SECRET
     )
 
     res.json({
       success: true,
       message: 'User created successfully',
-      accessToken
+      accessToken,
+      user: user
     })
   } catch (error) {
     res.status(500).json({ success: false, message: 'Internal server error' })
   }
 }
 
-// @route POST /login
-// @desc Login user
-// @access Public
+// Login user
 const loginUser = async (req, res) => {
   const { username, password } = req.body
 
@@ -152,14 +153,15 @@ const loginUser = async (req, res) => {
     // All good
     // Return token
     const accessToken = jwt.sign(
-      { userId: user._id },
+      { id: user._id },
       process.env.ACCESS_TOKEN_SECRET
     )
 
     res.json({
       success: true,
-      message: 'User logged in successfully',
-      accessToken
+      message: 'User logged in successfully cccccccccccccccccccccccccccccccccccc',
+      accessToken,
+      user: user
     })
   } catch (error) {
     res.status(500).json({ success: false, message: 'Internal server error' })

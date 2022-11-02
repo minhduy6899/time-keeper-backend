@@ -11,6 +11,10 @@ const Customer = new Schema({
   address: { type: String, default: "" },
   city: { type: String, default: "" },
   country: { type: String, default: "" },
+  role: {
+    type: String,
+    default: "user",
+  },
   orders: [
     {
       type: mongoose.Types.ObjectId,
@@ -23,4 +27,4 @@ const Customer = new Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('Customer', Customer);
+module.exports = mongoose.model('User', Customer);

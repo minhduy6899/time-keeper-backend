@@ -12,7 +12,8 @@ const {
   getOrderById,
   updateOrder,
   deleteOrder
-} = require('../controllers/orderController')
+} = require('../controllers/orderController');
+const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/authMiddleware');
 
 
 // use middle ware
@@ -20,18 +21,18 @@ const {
 
 
 //create a Order
-OrderRouter.post('/orders', createOrder);
+OrderRouter.post('/orders', isAuthenticatedUser, createOrder);
 
 //get all Order
-OrderRouter.get('/orders', getAllOrders);
+OrderRouter.get('/orders', isAuthenticatedUser, getAllOrders);
 
 //get a Order
-OrderRouter.get('/orders/:orderId', getOrderById)
+OrderRouter.get('/orders/:orderId', isAuthenticatedUser, getOrderById)
 
-//update a Order
-OrderRouter.put('/orders/:orderId', updateOrder)
+//update a Order (Admin)
+OrderRouter.put('/orders/:orderId', authorizeRoles("admin"), updateOrder)
 
-//delete a Order
-OrderRouter.delete('/orders/:orderId', deleteOrder)
+//delete a Order (Admin)
+OrderRouter.delete('/orders/:orderId', authorizeRoles("admin"), deleteOrder)
 
 module.exports = { OrderRouter };
