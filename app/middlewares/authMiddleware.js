@@ -2,6 +2,8 @@
 const jwt = require('jsonwebtoken')
 const firebase = require("../../firebase/admin");
 
+const customerModel = require('../model/customerModel');
+
 function authMiddleware(req, res, next) {
   const headerToken = req.headers.authorization;
   if (!headerToken) {
@@ -50,14 +52,15 @@ const isAuthenticatedUser = async (req, res, next) => {
   const headerToken = req.headers.authorization;
 
   if (!headerToken) {
-    return next(new ErrorHandler("Please Login for access this resource", 401));
+    return res.status(400).json({ message: 'error' });;
   }
 
   const token = headerToken.split(" ")[1];
 
-  const decodedData = jwt.verify(token, process.env.JWT_SECRET_KEY);
-
-  req.user = await User.findById(decodedData.id);
+  const decodedData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  console.log('check decodedata: ', decodedData)
+  req.user = await customerModel.findById(decodedData.id);
+  // req.user = decodedData.id
 
   next();
 };
@@ -66,7 +69,7 @@ const isAuthenticatedUser = async (req, res, next) => {
 const authorizeRoles = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return next(new ErrorHandler(`${req.user.role} can not access this resources`));
+      return res.status(400).json({ message: 'error' });
     };
     next();
   }

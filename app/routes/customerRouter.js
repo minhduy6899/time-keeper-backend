@@ -11,7 +11,8 @@ const {
   getCustomerById,
   updateCustomer,
   deleteCustomer,
-  loginUser
+  loginUser,
+  logoutUser
 } = require('../controllers/customerController')
 
 
@@ -22,8 +23,11 @@ CustomerRouter.use(CustomerMiddleware);
 //create a Customer
 CustomerRouter.post('/customers', createCustomer);
 
-//create a Customer
+//login
 CustomerRouter.post('/login', loginUser);
+
+//logout
+CustomerRouter.post('/logout', logoutUser);
 
 //get all Customer
 CustomerRouter.get('/customers', getAllCustomers);

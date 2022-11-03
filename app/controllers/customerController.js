@@ -2,81 +2,9 @@
 const mongoose = require("mongoose");
 const argon2 = require('argon2')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt');
 
 const customerModel = require('../model/customerModel');
-
-
-// Create user
-// const createCustomer = (req, res) => {
-//   // B1: Get data from request
-//   let bodyRequest = req.body;
-
-//   // B2: Validate data
-//   if (!bodyRequest.fullName) {
-//     return res.status(400).json({
-//       message: "fullName is required!"
-//     })
-//   }
-
-//   if (!bodyRequest.phone) {
-//     return res.status(400).json({
-//       message: "phone is required!"
-//     })
-//   }
-
-//   if (!bodyRequest.email) {
-//     return res.status(400).json({
-//       message: "email is required!"
-//     })
-//   }
-
-//   if (!bodyRequest.address) {
-//     return res.status(400).json({
-//       message: "address is required!"
-//     })
-//   }
-
-//   if (!bodyRequest.city) {
-//     return res.status(400).json({
-//       message: "city is required!"
-//     })
-//   }
-
-//   if (!bodyRequest.country) {
-//     return res.status(400).json({
-//       message: "country is required!"
-//     })
-//   }
-
-//   // B3: Call model
-//   let newCustomerData = {
-//     _id: mongoose.Types.ObjectId(),
-//     fullName: bodyRequest.fullName,
-//     phone: bodyRequest.phone,
-//     email: bodyRequest.email,
-//     address: bodyRequest.address,
-//     city: bodyRequest.city,
-//     country: bodyRequest.country,
-//   }
-
-//   customerModel.create(newCustomerData, (error, data) => {
-//     if (error) {
-//       return res.status(500).json({
-//         message: error.message,
-//         error: "something wrong when create user"
-//       })
-//     }
-
-//     return res.status(201).json({
-//       message: "Create successfully",
-//       newCustomer: data
-//     })
-//   })
-// }
-
-// @route POST customer
-// @desc Register user
-// @access Public
 
 // Create user
 const createCustomer = async (req, res) => {
@@ -98,7 +26,8 @@ const createCustomer = async (req, res) => {
         .json({ success: false, message: 'Username already taken' })
 
     // All good
-    const hashedPassword = await argon2.hash(password)
+    // const hashedPassword = await argon2.hash(password)
+    const hashedPassword = bcrypt.hashSync(password, 10);
     const newUser = new customerModel({
       username,
       password: hashedPassword,
@@ -113,12 +42,12 @@ const createCustomer = async (req, res) => {
       { id: newUser._id },
       process.env.ACCESS_TOKEN_SECRET
     )
-
+    const newUserRegister = await customerModel.findOne({ username })
     res.json({
       success: true,
       message: 'User created successfully',
       accessToken,
-      user: user
+      user: newUserRegister
     })
   } catch (error) {
     res.status(500).json({ success: false, message: 'Internal server error' })
@@ -128,7 +57,7 @@ const createCustomer = async (req, res) => {
 // Login user
 const loginUser = async (req, res) => {
   const { username, password } = req.body
-
+  console.log('check req body', req.body)
   // Simple validation
   if (!username || !password)
     return res
@@ -138,17 +67,20 @@ const loginUser = async (req, res) => {
   try {
     // Check for existing user
     const user = await customerModel.findOne({ username })
+    console.log('check find user', user)
     if (!user)
       return res
         .status(400)
         .json({ success: false, message: 'Incorrect username or password' })
 
     // Username found
-    const passwordValid = await argon2.verify(user.password, password)
+    console.log('da vao day roi')
+    // const passwordValid = await argon2.verify(user.password, password)
+    const passwordValid = bcrypt.compare(user.password, password);
     if (!passwordValid)
       return res
         .status(400)
-        .json({ success: false, message: 'Incorrect username or password' })
+        .json({ success: false, message: 'Incorrect password' })
 
     // All good
     // Return token
@@ -156,10 +88,9 @@ const loginUser = async (req, res) => {
       { id: user._id },
       process.env.ACCESS_TOKEN_SECRET
     )
-
     res.json({
       success: true,
-      message: 'User logged in successfully cccccccccccccccccccccccccccccccccccc',
+      message: 'User logged in successfully',
       accessToken,
       user: user
     })
@@ -167,6 +98,19 @@ const loginUser = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal server error' })
   }
 }
+
+//  Log out user
+const logoutUser = async (req, res, next) => {
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Log out success",
+  });
+};
 
 // Get all user
 const getAllCustomers = (req, res) => {
@@ -291,5 +235,6 @@ module.exports = {
   getCustomerById,
   updateCustomer,
   deleteCustomer,
-  loginUser
+  loginUser,
+  logoutUser
 }

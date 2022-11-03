@@ -54,9 +54,9 @@ const orderSchema = new mongoose.Schema({
       },
     },
   ],
-  user: {
+  Customer: {
     type: mongoose.Schema.ObjectId,
-    ref: "User",
+    ref: "Customer",
     required: false,
   },
   paymentInfo: {
@@ -66,7 +66,7 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   paidAt: {

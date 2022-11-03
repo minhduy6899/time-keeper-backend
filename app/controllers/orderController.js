@@ -28,7 +28,7 @@ const createOrder = async (req, res) => {
     shippingPrice,
     totalPrice,
     paidAt: Date.now(),
-    user: req.user._id,
+    Customer: req.user._id,
   });
 
   res.status(201).json({
@@ -40,12 +40,14 @@ const createOrder = async (req, res) => {
 // get Single Order by Id
 const getOrderById = async (req, res, next) => {
   const order = await Orders.findById(req.params.id).populate(
-    "user",
-    "name email"
+    "Customer",
+    "fullName username"
   );
 
   if (!order) {
-    return next(new ErrorHander("Order not found with this Id", 404));
+    return res.status(400).json({
+      success: true,
+    });;
   }
 
   res.status(200).json({
@@ -55,8 +57,8 @@ const getOrderById = async (req, res, next) => {
 };
 
 // get logged in user  Orders
-const myOrders = async (req, res, next) => {
-  const orders = await Orders.find({ user: req.user._id });
+const getMyOrders = async (req, res, next) => {
+  const orders = await Orders.find({ Customer: req.user._id });
 
   res.status(200).json({
     success: true,
@@ -246,5 +248,5 @@ module.exports = {
   getOrderById,
   updateOrder,
   deleteOrder,
-  myOrders
+  getMyOrders
 }
