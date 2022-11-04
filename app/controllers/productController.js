@@ -43,9 +43,9 @@ const createProduct = (req, res) => {
     imageUrl: bodyRequest.imageUrl,
     thumbnail:
     {
-      img1: bodyRequest.thumbnail.img1,
-      img2: bodyRequest.thumbnail.img2,
-      img3: bodyRequest.thumbnail.img3
+      img1: bodyRequest.img1,
+      img2: bodyRequest.img2,
+      img3: bodyRequest.img3
     },
     category: bodyRequest.category,
     badge: bodyRequest.badge,
@@ -180,17 +180,29 @@ const getProductById = (req, res) => {
 // Get product filter
 const getProductsFilter = (req, res) => {
   // B1: Get data from request
-  let productId = req.params.productId;
-
+  const { name } = req.query;
+  const condition = {}
   // B2: validate
-  if (!mongoose.Types.ObjectId.isValid(productId)) {
-    return res.status(400).json({
-      message: "product ID is invalid!"
-    })
+  if (name != 'undefined') {
+    const regex = new RegExp(`${name}`)
+    condition.name = regex
   }
 
+  // if(minStudent) {
+  //     condition.noStudent = {
+  //         ...condition.noStudent,
+  //         $gte: minStudent
+  //     }
+  // }
+
+  // if(maxStudent) {
+  //     condition.noStudent = {
+  //         ...condition.noStudent,
+  //         $lte: maxStudent
+  //     }
+  // }
   // B3: Call model
-  productModel.findById(productId, (error, data) => {
+  productModel.find(condition, (error, data) => {
     if (error) {
       return res.status(500).json({
         message: error.message
@@ -198,8 +210,8 @@ const getProductsFilter = (req, res) => {
     }
 
     return res.status(201).json({
-      message: "Get ProductType successfully",
-      product: data
+      message: "Get ProductFilter successfully",
+      products: data
     })
   })
 }
@@ -227,10 +239,21 @@ const updateProduct = (req, res) => {
   let productUpdate = {
     name: bodyRequest.name,
     description: bodyRequest.description,
-    imageUrl: bodyRequest.imageUrl,
     buyPrice: bodyRequest.buyPrice,
     promotionPrice: bodyRequest.promotionPrice,
-    amount: bodyRequest.amount,
+    imageUrl: bodyRequest.imageUrl,
+    thumbnail:
+    {
+      img1: bodyRequest.img1,
+      img2: bodyRequest.img2,
+      img3: bodyRequest.img3
+    },
+    category: bodyRequest.category,
+    badge: bodyRequest.badge,
+    color: bodyRequest.color,
+    size: bodyRequest.size,
+    ratings: bodyRequest.ratings,
+    amount: bodyRequest.amount
   };
 
   productModel.findByIdAndUpdate(productId, productUpdate, (error, data) => {
@@ -267,8 +290,9 @@ const deleteProduct = (req, res) => {
       })
     }
 
-    return res.status(204).json({
-      message: "Delete product successfully"
+    return res.status(200).json({
+      message: "Delete product successfully",
+      success: true
     })
   })
 }

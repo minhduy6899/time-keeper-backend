@@ -42,7 +42,6 @@ const verifyToken = (req, res, next) => {
     req.userId = decoded.userId
     next()
   } catch (error) {
-    console.log(error)
     return res.status(403).json({ success: false, message: 'Invalid token' })
   }
 }
@@ -58,10 +57,8 @@ const isAuthenticatedUser = async (req, res, next) => {
   const token = headerToken.split(" ")[1];
 
   const decodedData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-  console.log('check decodedata: ', decodedData)
   req.user = await customerModel.findById(decodedData.id);
   // req.user = decodedData.id
-
   next();
 };
 

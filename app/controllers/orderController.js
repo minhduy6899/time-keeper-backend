@@ -7,8 +7,6 @@ const orderModel = require('../model/orderModel');
 // Create course
 const createOrder = async (req, res) => {
 
-  console.log('check req: ', req.body)
-
   const {
     shippingInfo,
     orderItems,

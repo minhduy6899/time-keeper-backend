@@ -29,6 +29,9 @@ ProductRouter.get('/allProducts', getAllProducts);
 //get limit product
 ProductRouter.get('/products', getLimitProducts);
 
+//get filter product
+ProductRouter.get('/productsFilter', getProductsFilter);
+
 //get a product
 ProductRouter.get('/products/:productId', getProductById)
 

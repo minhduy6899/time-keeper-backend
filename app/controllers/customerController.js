@@ -57,7 +57,6 @@ const createCustomer = async (req, res) => {
 // Login user
 const loginUser = async (req, res) => {
   const { username, password } = req.body
-  console.log('check req body', req.body)
   // Simple validation
   if (!username || !password)
     return res
@@ -67,14 +66,12 @@ const loginUser = async (req, res) => {
   try {
     // Check for existing user
     const user = await customerModel.findOne({ username })
-    console.log('check find user', user)
     if (!user)
       return res
         .status(400)
         .json({ success: false, message: 'Incorrect username or password' })
 
     // Username found
-    console.log('da vao day roi')
     // const passwordValid = await argon2.verify(user.password, password)
     const passwordValid = bcrypt.compare(user.password, password);
     if (!passwordValid)
