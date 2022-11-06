@@ -168,13 +168,6 @@ const updateCustomer = (req, res) => {
     })
   }
 
-  // Bóc tách trường hợp undefied
-  if (!bodyRequest.email) {
-    return res.status(400).json({
-      message: "Email is required!"
-    })
-  }
-
   // B3: Call model
   let customerUpdate = {
     fullName: bodyRequest.fullName,
@@ -183,6 +176,7 @@ const updateCustomer = (req, res) => {
     address: bodyRequest.address,
     city: bodyRequest.city,
     country: bodyRequest.country,
+    role: bodyRequest.role,
   };
 
   customerModel.findByIdAndUpdate(customerId, customerUpdate, (error, data) => {
@@ -219,7 +213,7 @@ const deleteCustomer = (req, res) => {
       })
     }
 
-    return res.status(204).json({
+    return res.status(200).json({
       message: "Delete user successfully"
     })
   })

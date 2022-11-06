@@ -25,7 +25,7 @@ const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/authMidd
 OrderRouter.post('/orders', isAuthenticatedUser, createOrder);
 
 //get all Order
-OrderRouter.get('/orders', isAuthenticatedUser, getAllOrders);
+OrderRouter.get('/orders', getAllOrders);
 
 //get a Order
 OrderRouter.get('/orders/me', isAuthenticatedUser, getMyOrders)
