@@ -112,7 +112,13 @@ const logoutUser = async (req, res, next) => {
 // Get all user
 const getAllCustomers = (req, res) => {
   // B1: Get data from request
-  // B2: Validate data
+  const { username } = req.query;
+  const condition = {}
+  // B2: validate
+  if (username != 'undefined') {
+    const regex = new RegExp(`${username}`)
+    condition.username = regex
+  }
   // B3: Call model
   customerModel.find((error, data) => {
     if (error) {

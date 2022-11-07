@@ -66,7 +66,22 @@ const getMyOrders = async (req, res, next) => {
 
 // get all Orders -- Admin
 const getAllOrders = async (req, res, next) => {
-  const orders = await Orders.find();
+  // B1: Get data from request
+  const price = req.query.maxPrice;
+  const maxPrice = parseInt(price)
+
+  console.log('check maxprice: type ', typeof maxPrice)
+  const condition = {}
+  // B2: validate
+
+  if (maxPrice !== 'undefined' && maxPrice !== 'NaN' && maxPrice !== NaN) {
+    const regex = new RegExp(`${maxPrice}`)
+    condition.itemsPrice = {
+      $gte: maxPrice
+    }
+  }
+
+  const orders = await Orders.find(condition);
 
   let totalAmount = 0;
 
@@ -124,8 +139,6 @@ const deleteOrder = async (req, res, next) => {
     success: true,
   });
 };
-
-
 
 // // Get all Order
 // const getAllOrders = (req, res) => {
