@@ -1,8 +1,6 @@
 //khai báo thư viện express
 const express = require('express');
-// const { OrderMiddleware } = require('../middlewares/OrderMiddleware');
-// const Drink = require('../model/drinkModel');
-// const OrderController = require('../controllers/OrderController');
+
 //tạo router
 const OrderRouter = express.Router();
 

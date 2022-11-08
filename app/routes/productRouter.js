@@ -1,8 +1,7 @@
 //khai báo thư viện express
 const express = require('express');
 const { productMiddleware } = require('../middlewares/productMiddleware');
-// const Drink = require('../model/drinkModel');
-// const productController = require('../controllers/productController');
+
 //tạo router
 const ProductRouter = express.Router();
 
