@@ -96,7 +96,7 @@ const getAllProducts = (req, res) => {
 // Get limit product
 const getLimitProducts = async (req, res) => {
   // B1: Get data from request
-  const { limit, productName, minPrice, maxPrice, productCategories, productColor, productSize, sortProducts } = req.query
+  const { skip, limit, productName, minPrice, maxPrice, productCategories, productColor, productSize, sortProducts } = req.query
   // B2: validate
   // B3: Call model
   // productModel
@@ -116,6 +116,7 @@ const getLimitProducts = async (req, res) => {
                   { color: productColor, size: productSize } :
                   { category: productCategories, size: productSize, color: productColor })
     .limit(limit)
+    .skip((skip - 1) * limit)
     .sort(sortProducts === 'name' ? { name: "ascending" } : sortProducts === 'price' ? { promotionPrice: "ascending" } : {})
     .exec((error, data) => {
       if (error) {

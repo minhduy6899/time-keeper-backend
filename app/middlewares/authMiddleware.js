@@ -21,7 +21,7 @@ function authMiddleware(req, res, next) {
     .verifyIdToken(token)
     .then(async () => {
       // Validate user on database
-      req.user = await User.findById(decodedData.id)
+      // req.user = await User.findById(decodedData.id)
       next()
     })
     .catch(() => res.status(403).send({ message: "Could not authorize" }));
