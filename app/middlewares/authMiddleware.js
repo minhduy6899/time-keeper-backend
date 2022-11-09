@@ -58,7 +58,6 @@ const isAuthenticatedUser = async (req, res, next) => {
 
   const decodedData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   req.user = await customerModel.findById(decodedData.id);
-  // req.user = decodedData.id
   next();
 };
 
