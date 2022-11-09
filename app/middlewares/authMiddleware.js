@@ -65,7 +65,7 @@ const isAuthenticatedUser = async (req, res, next) => {
 // Admin Roles
 const authorizeRoles = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
+    if (!roles.includes(req.Customer.role)) {
       return res.status(400).json({ message: 'error' });
     };
     next();

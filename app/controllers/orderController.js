@@ -37,10 +37,11 @@ const createOrder = async (req, res) => {
 
 // get Single Order by Id
 const getOrderById = async (req, res, next) => {
-  const order = await Orders.findById(req.params.id).populate(
-    "Customer",
-    "fullName username"
-  );
+  const order = await Orders.findById(req.params.orderId)
+  // .populate(
+  //   "Customer",
+  //   // "fullName username"
+  // );
 
   if (!order) {
     return res.status(400).json({
@@ -54,7 +55,7 @@ const getOrderById = async (req, res, next) => {
   });
 };
 
-// get logged in user  Orders
+// get my order
 const getMyOrders = async (req, res, next) => {
   const orders = await Orders.find({ Customer: req.user._id });
 
@@ -68,9 +69,10 @@ const getMyOrders = async (req, res, next) => {
 const getAllOrders = async (req, res, next) => {
   // B1: Get data from request
   const price = req.query.maxPrice;
+  const skip = req.query.skip;
+  const limit = req.query.limit;
   const maxPrice = parseInt(price)
 
-  console.log('check maxprice: type ', typeof maxPrice)
   const condition = {}
   // B2: validate
 
@@ -81,7 +83,7 @@ const getAllOrders = async (req, res, next) => {
     }
   }
 
-  const orders = await Orders.find(condition);
+  const orders = await Orders.find(condition).limit(limit).skip(skip);
 
   let totalAmount = 0;
 
@@ -96,161 +98,63 @@ const getAllOrders = async (req, res, next) => {
   });
 };
 
-// update Order Status -- Admin
-const updateOrder = async (req, res, next) => {
-  const order = await Orders.findById(req.params.id);
+// Delete Order by id
+const deleteOrder = (req, res) => {
+  // B1: Get data from request
+  let orderId = req.params.orderId;
 
-  if (!order) {
-    return next(new ErrorHander("Order not found with this Id", 404));
+  // B2: Validate data
+  if (!mongoose.Types.ObjectId.isValid(orderId)) {
+    return res.status(400).json({
+      message: "Order ID is invalid!"
+    })
   }
 
-  if (order.orderStatus === "Delivered") {
-    return next(new ErrorHander("You have already delivered this order", 400));
+  // B3: Call modal
+  Orders.findByIdAndDelete(orderId, (error, data) => {
+    if (error) {
+      return res.status(500).json({
+        message: error.message
+      })
+    }
+
+    return res.status(200).json({
+      message: "Delete order successfully"
+    })
+  })
+}
+
+const updateOrder = (req, res) => {
+  // B1: Get data from request
+  let orderId = req.params.orderId;
+  let bodyRequest = req.body;
+
+
+  // B2: Validate data
+  if (!mongoose.Types.ObjectId.isValid(orderId)) {
+    return res.status(400).json({
+      message: "Order ID is invalid!"
+    })
   }
 
-  if (req.body.status === "Shipped") {
-    order.orderItems.forEach(async (o) => {
-      await updateStock(o.product, o.quantity);
-    });
-  }
-  order.orderStatus = req.body.status;
+  // B3: Call modal
+  let orderUpdate = {
+    orderStatus: bodyRequest.orderStatus
+  };
 
-  if (req.body.status === "Delivered") {
-    order.deliveredAt = Date.now();
-  }
+  Orders.findByIdAndUpdate(orderId, orderUpdate, (error, data) => {
+    if (error) {
+      return res.status(500).json({
+        message: error.message
+      })
+    }
 
-  await order.save({ validateBeforeSave: false });
-  res.status(200).json({
-    success: true,
-  });
-};
-
-// delete Order -- Admin
-const deleteOrder = async (req, res, next) => {
-  const order = await Orders.findById(req.params.id);
-
-  if (!order) {
-    return next(new ErrorHander("Order not found with this Id", 404));
-  }
-
-  await order.remove();
-
-  res.status(200).json({
-    success: true,
-  });
-};
-
-// // Get all Order
-// const getAllOrders = (req, res) => {
-//   // B1: Get data from request
-//   // B2: Validate data
-//   // B3: Call modal
-//   orderModel.find((error, data) => {
-//     if (error) {
-//       return res.status(500).json({
-//         message: error.message
-//       })
-//     }
-
-//     return res.status(200).json({
-//       message: "Get all courses successfully",
-//       Order: data
-//     })
-//   })
-// }
-
-// // Get Order by id
-// const getOrderById = (req, res) => {
-//   // B1: Get data from request
-//   let orderId = req.params.orderId;
-
-//   // B2: Validate data
-//   if (!mongoose.Types.ObjectId.isValid(orderId)) {
-//     return res.status(400).json({
-//       message: "Course ID is invalid!"
-//     })
-//   }
-
-//   // B3: Call modal
-//   orderModel.findById(orderId, (error, data) => {
-//     if (error) {
-//       return res.status(500).json({
-//         message: error.message
-//       })
-//     }
-
-//     return res.status(201).json({
-//       message: "Get Order successfully",
-//       order: data
-//     })
-//   })
-// }
-
-// // Update Order by id
-// const updateOrder = (req, res) => {
-//   // B1: Get data from request
-//   let orderId = req.params.orderId;
-//   let bodyRequest = req.body;
-
-//   // B2: Validate data
-//   if (!mongoose.Types.ObjectId.isValid(orderId)) {
-//     return res.status(400).json({
-//       message: "ProductType ID is invalid!"
-//     })
-//   }
-
-//   // Bóc tách trường hợp undefied
-//   if (!bodyRequest.cost) {
-//     return res.status(400).json({
-//       message: "cost is required!"
-//     })
-//   }
-
-//   // B3: Call modal
-//   let orderUpdate = {
-//     note: bodyRequest.note,
-//     cost: bodyRequest.cost,
-//   };
-
-//   orderModel.findByIdAndUpdate(orderId, orderUpdate, (error, data) => {
-//     if (error) {
-//       return res.status(500).json({
-//         message: error.message
-//       })
-//     }
-
-//     return res.status(200).json({
-//       message: "Update course successfully",
-//       order: data
-//     })
-//   })
-// }
-
-// // Delete Order by id
-// const deleteOrder = (req, res) => {
-//   // B1: Get data from request
-//   let orderId = req.params.orderId;
-
-//   // B2: Validate data
-//   if (!mongoose.Types.ObjectId.isValid(orderId)) {
-//     return res.status(400).json({
-//       message: "Product ID is invalid!"
-//     })
-//   }
-
-//   // B3: Call modal
-//   orderModel.findByIdAndDelete(orderId, (error, data) => {
-//     if (error) {
-//       return res.status(500).json({
-//         message: error.message
-//       })
-//     }
-
-//     return res.status(204).json({
-//       message: "Delete order successfully"
-//     })
-//   })
-// }
+    return res.status(200).json({
+      message: "Update course successfully",
+      order: data
+    })
+  })
+}
 
 // Export Order controller thành 1 module
 module.exports = {
