@@ -125,28 +125,77 @@ const getLimitProducts = async (req, res) => {
         })
       }
 
-      return res.status(200).json({
-        message: "Get all products successfully",
-        products: data.filter((item, index) => {
-          if (!productName || productName === "ALL") {
-            if (!minPrice || minPrice === 0 && !maxPrice || maxPrice === 1000) {
-              return true
-            } else {
-              return item.promotionPrice <= maxPrice && item.promotionPrice >= minPrice
-            }
-          }
-          else {
-            if (!minPrice || minPrice === 0 && !maxPrice || maxPrice === 1000) {
-              return item.name.toLowerCase().includes(productName.toLowerCase())
 
-            } else {
-              return item.name.toLowerCase().includes(productName.toLowerCase()) &&
-                (item.promotionPrice <= maxPrice && item.promotionPrice >= minPrice)
-            }
-
+      const dataFilter = data.filter((item, index) => {
+        if (!productName || productName === "ALL") {
+          if (!minPrice || minPrice === 0 && !maxPrice || maxPrice === 1000) {
+            return true
+          } else {
+            return item.promotionPrice <= maxPrice && item.promotionPrice >= minPrice
           }
-        })
+        }
+        else {
+          if (!minPrice || minPrice === 0 && !maxPrice || maxPrice === 1000) {
+            return item.name.toLowerCase().includes(productName.toLowerCase())
+
+          } else {
+            return item.name.toLowerCase().includes(productName.toLowerCase()) &&
+              (item.promotionPrice <= maxPrice && item.promotionPrice >= minPrice)
+          }
+
+        }
       })
+
+      productModel
+        .find((productCategories === 'ALL' && productColor === 'ALL' && productSize === 'ALL') ? {} :
+          (productCategories !== 'ALL' && productColor === 'ALL' && productSize === 'ALL') ?
+            { category: productCategories } :
+            (productCategories === 'ALL' && productColor !== 'ALL' && productSize === 'ALL') ?
+              { color: productColor } :
+              (productCategories === 'ALL' && productColor === 'ALL' && productSize !== 'ALL') ?
+                { size: productSize } :
+                (productCategories !== 'ALL' && productColor !== 'ALL' && productSize === 'ALL') ?
+                  { category: productCategories, color: productColor } :
+                  (productCategories !== 'ALL' && productColor === 'ALL' && productSize !== 'ALL') ?
+                    { category: productCategories, size: productSize } :
+                    (productCategories === 'ALL' && productColor !== 'ALL' && productSize !== 'ALL') ?
+                      { color: productColor, size: productSize } :
+                      { category: productCategories, size: productSize, color: productColor })
+        .exec((error, productFilter) => {
+          if (error) {
+            return res.status(500).json({
+              message: error.message
+            })
+          }
+          const noPage = productFilter.filter((item, index) => {
+            if (!productName || productName === "ALL") {
+              if (!minPrice || minPrice === 0 && !maxPrice || maxPrice === 1000) {
+                return true
+              } else {
+                return item.promotionPrice <= maxPrice && item.promotionPrice >= minPrice
+              }
+            }
+            else {
+              if (!minPrice || minPrice === 0 && !maxPrice || maxPrice === 1000) {
+                return item.name.toLowerCase().includes(productName.toLowerCase())
+
+              } else {
+                return item.name.toLowerCase().includes(productName.toLowerCase()) &&
+                  (item.promotionPrice <= maxPrice && item.promotionPrice >= minPrice)
+              }
+
+            }
+          }).length / limit
+
+          return res.status(200).json({
+            message: "Get all products successfully",
+            products: dataFilter,
+            noPage: Math.ceil(noPage)
+          })
+        })
+
+
+
     })
 
 }
