@@ -4,61 +4,61 @@ const orderSchema = new mongoose.Schema({
   shippingInfo: {
     address: {
       type: String,
-      required: true,
+      required: false,
     },
     city: {
       type: String,
-      required: true,
+      required: false,
     },
 
     state: {
       type: String,
-      required: true,
+      required: false,
     },
 
     country: {
       type: String,
-      required: true,
+      required: false,
     },
     pinCode: {
       type: Number,
-      required: true,
+      required: false,
     },
     phoneNo: {
       type: Number,
-      required: true,
+      required: false,
     },
   },
   orderItems: [
     {
       name: {
         type: String,
-        required: true,
+        required: false,
       },
       price: {
         type: Number,
-        required: true,
+        required: false,
       },
       quantity: {
         type: Number,
-        required: true,
+        required: false,
       },
       image: {
         type: String,
-        required: true,
+        required: false,
       },
       color: {
         type: String,
-        required: true,
+        required: false,
       },
       size: {
         type: String,
-        required: true,
+        required: false,
       },
       product: {
         type: mongoose.Schema.ObjectId,
         ref: "Product",
-        required: true,
+        required: false,
       },
     },
   ],
@@ -83,7 +83,7 @@ const orderSchema = new mongoose.Schema({
   },
   itemsPrice: {
     type: Number,
-    required: true,
+    required: false,
     default: 0,
   },
   taxPrice: {
@@ -93,12 +93,12 @@ const orderSchema = new mongoose.Schema({
   },
   shippingPrice: {
     type: Number,
-    required: true,
+    required: false,
     default: 0,
   },
   totalPrice: {
     type: Number,
-    required: true,
+    required: false,
     default: 0,
   },
   orderStatus: {

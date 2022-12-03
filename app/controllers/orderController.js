@@ -1,8 +1,6 @@
 // Import thư viện mongoose
 const mongoose = require("mongoose");
-
 const Orders = require("../model/ordersModel");
-// const orderModel = require('../model/orderModel');
 
 // Create course
 const createOrder = async (req, res) => {
