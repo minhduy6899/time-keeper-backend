@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "engines": {
-    "node": "16.x"
+    "node": "14.x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -30,6 +30,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.0",
     "nodemon": "^2.0.20",
+    "vercel": "^28.7.2",
     "vn-payments": "^1.1.0"
   }
 }
